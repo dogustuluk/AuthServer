@@ -12,7 +12,7 @@ namespace AuthServer.Core.Services
     {
         Task<Response<TDto>> GetByIdAsync(int id);
         Task<Response<IEnumerable<TDto>>> GetAllAsync(); 
-        IEnumerable<Response<TEntity>> where(Expression<Func<TEntity, bool>> predicate); 
+        IEnumerable<Response<TDto>> where(Expression<Func<TEntity, bool>> predicate); 
         Task <Response<TDto>> AddAsync(TEntity entity); 
         Task<Response<NoDataDto>> Remove(TEntity entity); 
         Task<Response<NoDataDto>> Update(TEntity entity);
