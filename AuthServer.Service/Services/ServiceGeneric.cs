@@ -63,7 +63,7 @@ namespace AuthServer.Service.Services
             return Response<NoDataDto>.Success(200); //geriye herhangi bir data dönmeyecek, 200 kodunu göndermemiz client'lar için yeterli
         }
 
-        public Task<Response<NoDataDto>> Update(TDto entity)
+        public Task<Response<NoDataDto>> Update(TDto entity, int id)
         {
             throw new NotImplementedException();
         }
