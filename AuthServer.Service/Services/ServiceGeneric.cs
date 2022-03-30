@@ -23,9 +23,15 @@ namespace AuthServer.Service.Services
         }
 
 
-        public Task<Response<TDto>> AddAsync(TEntity entity)
+        public async Task<Response<TDto>> AddAsync(TDto entity)
         {
-            throw new NotImplementedException();
+            //önce TDto'yu TEntity'e dönüştür
+            var newEntity = ObjectMapper.Mapper.Map<TEntity>(entity); //Dto'dan dönüşmüş bir entity nesnesi oluştu
+            await _genericRepository.AddAsync(newEntity); 
+            await _unitOfWork.CommitAsync(); //tek bir transaction'da data kayıt oldu.
+
+            var newDto = ObjectMapper.Mapper.Map<TDto>(newEntity);
+            return Response<TDto>.Success(newDto, 200);
         }
 
         public Task<Response<IEnumerable<TDto>>> GetAllAsync()
@@ -38,12 +44,12 @@ namespace AuthServer.Service.Services
             throw new NotImplementedException();
         }
 
-        public Task<Response<NoDataDto>> Remove(TEntity entity)
+        public Task<Response<NoDataDto>> Remove(TDto entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Response<NoDataDto>> Update(TEntity entity)
+        public Task<Response<NoDataDto>> Update(TDto entity)
         {
             throw new NotImplementedException();
         }
