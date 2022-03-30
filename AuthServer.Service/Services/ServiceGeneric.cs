@@ -34,9 +34,10 @@ namespace AuthServer.Service.Services
             return Response<TDto>.Success(newDto, 200);
         }
 
-        public Task<Response<IEnumerable<TDto>>> GetAllAsync()
+        public async Task<Response<IEnumerable<TDto>>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var products = ObjectMapper.Mapper.Map<List<TDto>>(await _genericRepository.GetAllAsync());
+            return Response<IEnumerable<TDto>>.Success(products, 200);
         }
 
         public Task<Response<TDto>> GetByIdAsync(int id)
