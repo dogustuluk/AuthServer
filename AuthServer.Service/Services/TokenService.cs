@@ -39,7 +39,7 @@ namespace AuthServer.Service.Services
         //Token'ın Payload'ında olmasını istediğimiz dataları eklemek için aşağıdaki kodlar yazılır
         //Token'ın payloadında tutulan key-value'ların hepsi claim nesnesinden gelir.
         //audiences >> bu token'ın hangi api'lere istek yapacağına karşılık gelmektedir.
-        public IEnumerable<Claim> GetClaim(UserApp userApp, List<String> audiences)
+        public IEnumerable<Claim> GetClaims(UserApp userApp, List<String> audiences)
         {
             var userList = new List<Claim>
             {
@@ -55,6 +55,15 @@ namespace AuthServer.Service.Services
             return userList;
         }
 
+        private IEnumerable<Claim> GetClaimsByClient(Client client)
+        {
+            //burada üyelik istemeyen kısımlardaki tokenları yazıyoruz.
+            var claims = new List<Claim>();
+            claims.AddRange(client.Audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
+            new Claim(JwtRegisteredClaimNames.Sub, client.ClientId.ToString()); //bu kod parçası ile token'ın kime ait olduğu bulunur.
+            return claims;
+        }
 
         public TokenDto CreateToken(UserApp userApp)
         {
