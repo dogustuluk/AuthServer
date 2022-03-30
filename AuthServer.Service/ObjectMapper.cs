@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AuthServer.Service
 {
-    public class ObjectMapper
-    {
+    public static class ObjectMapper
+    {   //data'yı alana kadar memory'de bulunmaması için lazy kullanırız.
         //Lazy class'ı ile ihtiyaç halinde yüklenmesini istediğimiz data ları çekeriz, gereksiz bir şekilde tüm datalar yüklenmez.
         private static readonly Lazy<IMapper> lazy = new Lazy<IMapper>(() =>
         {
