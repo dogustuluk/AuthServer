@@ -10,6 +10,7 @@ namespace AuthServer.Service
     public static class ObjectMapper
     {   //data'yı alana kadar memory'de bulunmaması için lazy kullanırız.
         //Lazy class'ı ile ihtiyaç halinde yüklenmesini istediğimiz data ları çekeriz, gereksiz bir şekilde tüm datalar yüklenmez.
+        //geç initialize işlemi yapmaktadır.
         private static readonly Lazy<IMapper> lazy = new Lazy<IMapper>(() =>
         {
             var config = new MapperConfiguration(cfg => //action metotlar parametre alır ama geriye herhangi bir değer döndürmez.
@@ -21,5 +22,6 @@ namespace AuthServer.Service
         });
 
         public static IMapper Mapper = lazy.Value;
+        //ObjectMapper.Mapper yapana değin en üstteki isimsiz method çalışmayacak, çağırıldığı andan itibaren memory'e yüklenmiş olacak.
     }
 }
