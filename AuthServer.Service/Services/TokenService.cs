@@ -38,14 +38,17 @@ namespace AuthServer.Service.Services
 
         //Token'ın Payload'ında olmasını istediğimiz dataları eklemek için aşağıdaki kodlar yazılır
         //Token'ın payloadında tutulan key-value'ların hepsi claim nesnesinden gelir.
+        //audiences >> bu token'ın hangi api'lere istek yapacağına karşılık gelmektedir.
         public IEnumerable<Claim> GetClaim(UserApp userApp, List<String> audiences)
         {
             var userList = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userApp.Id),
-                new Claim(JwtRegisteredClaimNames.Email, userApp.Email),
+                new Claim(ClaimTypes.NameIdentifier, userApp.Id), //token eğer üyelik ile ilgiliyse Id olmak zorunda
+                new Claim(JwtRegisteredClaimNames.Email, userApp.Email), //new Claim("email", userApp.Email) şeklinde de yazılır ama her zaman 
+                // const'lar üzerinden çalışmak daha sürdürülebilir ve yönetilebilir bir yöntem olmaktadır. sabitler yanlış kod yazmanın da önüne geçer.
                 new Claim(ClaimTypes.Name, userApp.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //token'a id vermek zorunlu değildir, ama daha doğru bir yapı inşa etmek
+                //için tokenlara id vermemiz gerekmektedir.
             };
 
             userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
