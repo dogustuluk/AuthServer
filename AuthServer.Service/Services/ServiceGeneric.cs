@@ -60,12 +60,22 @@ namespace AuthServer.Service.Services
 
             _genericRepository.Remove(isExistEntity); //ilgili datayı memory state'te deleted olarak işaretlemiş olduk
             await _unitOfWork.CommitAsync(); //ilgili datanın memory state'teki deleted işlemini veri tabanına yansıtmış olduk.
-            return Response<NoDataDto>.Success(200); //geriye herhangi bir data dönmeyecek, 200 kodunu göndermemiz client'lar için yeterli
+            return Response<NoDataDto>.Success(204); //204 kodu >>> no content kodudur yani response body'sinde herhangi bir data olmaz
         }
 
-        public Task<Response<NoDataDto>> Update(TDto entity, int id)
+        public async Task<Response<NoDataDto>> Update(TDto entity, int id)
         {
-            throw new NotImplementedException();
+            var isExistEntity = await _genericRepository.GetByIdAsync(id); //generic repo'daki methot detached olarak işaretlenmiştir. sebebi ise
+            //track edilmesini önlemek. eğer bunu yapmazsak update metodunda memory'de aynı anda iki adet aynı id'ye sahip data track edilecek ve
+            //işlem başarılı bir şekilde sonuçlanmayacak.
+            if (isExistEntity == null)
+            {
+                return Response<NoDataDto>.Fail("Id not found", 404, true);
+            }
+            var updatedEntity = ObjectMapper.Mapper.Map<TEntity>(entity);
+            _genericRepository.Update(updatedEntity);
+            await _unitOfWork.CommitAsync();
+            return Response<NoDataDto>.Success(204); //204 kodu >>> no content kodudur yani response body'sinde herhangi bir data olmaz
         }
 
         public IEnumerable<Response<TDto>> where(Expression<Func<TEntity, bool>> predicate)
