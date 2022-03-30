@@ -6,7 +6,9 @@ using Microsoft.Extensions.Options;
 using SharedLibrary.Configurations;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +35,23 @@ namespace AuthServer.Service.Services
             return Convert.ToBase64String(numberByte);
             //bu şekilde oluşturulan kriptografinin imzası benzersiz olacaktır, birbirinin aynısı olma ihtimali çok düşüktür.
         }
+
+        //Token'ın Payload'ında olmasını istediğimiz dataları eklemek için aşağıdaki kodlar yazılır
+        //Token'ın payloadında tutulan key-value'ların hepsi claim nesnesinden gelir.
+        public IEnumerable<Claim> GetClaim(UserApp userApp, List<String> audiences)
+        {
+            var userList = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userApp.Id),
+                new Claim(JwtRegisteredClaimNames.Email, userApp.Email),
+                new Claim(ClaimTypes.Name, userApp.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
+            return userList;
+        }
+
 
         public TokenDto CreateToken(UserApp userApp)
         {
