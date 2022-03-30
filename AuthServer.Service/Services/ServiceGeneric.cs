@@ -50,9 +50,17 @@ namespace AuthServer.Service.Services
             return Response<TDto>.Success(ObjectMapper.Mapper.Map<TDto>(product), 200);
         }
 
-        public Task<Response<NoDataDto>> Remove(int id) //TDto alırsak id üzerinden silinecek olan datanın var olup olmadığını bilemeyebiliriz.
+        public async Task<Response<NoDataDto>> Remove(int id) //TDto alırsak id üzerinden silinecek olan datanın var olup olmadığını bilemeyebiliriz.
         {
-            throw new NotImplementedException();
+            var isExistEntity = await _genericRepository.GetByIdAsync(id);
+            if (isExistEntity == null)
+            {
+                return Response<NoDataDto>.Fail("Id not found", 404, true);
+            }
+
+            _genericRepository.Remove(isExistEntity); //ilgili datayı memory state'te deleted olarak işaretlemiş olduk
+            await _unitOfWork.CommitAsync(); //ilgili datanın memory state'teki deleted işlemini veri tabanına yansıtmış olduk.
+            return Response<NoDataDto>.Success(200); //geriye herhangi bir data dönmeyecek, 200 kodunu göndermemiz client'lar için yeterli
         }
 
         public Task<Response<NoDataDto>> Update(TDto entity)
