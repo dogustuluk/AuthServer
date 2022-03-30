@@ -40,9 +40,14 @@ namespace AuthServer.Service.Services
             return Response<IEnumerable<TDto>>.Success(products, 200);
         }
 
-        public Task<Response<TDto>> GetByIdAsync(int id)
+        public async Task<Response<TDto>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _genericRepository.GetByIdAsync(id);
+            if (product == null)
+            {
+                return Response<TDto>.Fail("Id not found", 404, true);
+            }
+            return Response<TDto>.Success(ObjectMapper.Mapper.Map<TDto>(product), 200);
         }
 
         public Task<Response<NoDataDto>> Remove(TDto entity)
