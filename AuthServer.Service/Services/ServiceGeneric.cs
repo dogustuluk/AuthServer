@@ -50,7 +50,7 @@ namespace AuthServer.Service.Services
             return Response<TDto>.Success(ObjectMapper.Mapper.Map<TDto>(product), 200);
         }
 
-        public Task<Response<NoDataDto>> Remove(TDto entity)
+        public Task<Response<NoDataDto>> Remove(int id) //TDto alırsak id üzerinden silinecek olan datanın var olup olmadığını bilemeyebiliriz.
         {
             throw new NotImplementedException();
         }
