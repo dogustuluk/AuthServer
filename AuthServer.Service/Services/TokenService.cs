@@ -68,12 +68,11 @@ namespace AuthServer.Service.Services
 
         public TokenDto CreateToken(UserApp userApp)
         {
-            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
-            var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration);
-            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey); //imzayı alıyoruz burada.
-
+            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration); //token'ın erişim süresi
+            var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration); //token yenilenme süresi
+            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey); //token imzası
             SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            //yukarıdaki kod satırında imza oluşturulur. algoritmadan istenilen herhangi biri seçilebilir.
+            //yukarıdaki kod satırında imza oluşturulur. algoritmadan istenilen herhangi bir şifreleme algoritması seçilebilir.
 
             //alt satırdaki kod bloğu ile token'ımızı oluşturmaya başlıyoruz
             JwtSecurityToken jwtSecurityToken = new JwtSecurityToken
