@@ -3,6 +3,7 @@ using AuthServer.Core.DTOs;
 using AuthServer.Core.Entity;
 using AuthServer.Core.Services;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SharedLibrary.Configurations;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,39 @@ namespace AuthServer.Service.Services
 
         public TokenDto CreateToken(UserApp userApp)
         {
-            throw new NotImplementedException();
+            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
+            var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration);
+            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey); //imzayı alıyoruz burada.
+
+            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            //yukarıdaki kod satırında imza oluşturulur. algoritmadan istenilen herhangi biri seçilebilir.
+
+            //alt satırdaki kod bloğu ile token'ımızı oluşturmaya başlıyoruz
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken
+                (
+                issuer: _tokenOption.Issuer, //Token'ı yayınlayanın kim olduğunu buluyoruz. Issuer ise "_tokenOption"dan gelmektedir. 
+                //_tokenOption ise "CustomTokenOption"dan gelir.
+                expires: accessTokenExpiration, //token'ın ömrünü veriyoruz.
+                notBefore: DateTime.Now, //geçerli olan token süresinden önce geçersiz olmaması için.
+                claims: GetClaims(userApp, _tokenOption.Audience), //token'ın hangi api'lere erişebileceği bilgisini vermiş oluyoruz.
+                signingCredentials: signingCredentials //imzayı veriyoruz.
+                //henüz token oluşmadı
+                );
+
+            //alttaki kod token'ı oluşturacak 
+            var handler = new JwtSecurityTokenHandler();
+
+            var token = handler.WriteToken(jwtSecurityToken); //burdan gelecek örnek data için jwt.io'daki encoded kısmına bakabilirsin
+
+            //gelen token'ı tokenDto'ya dönüştürmemiz gerekmektedir.
+            var tokenDto = new TokenDto
+            {
+                AccessToken = token, //"token" ile "accessToken" aynı şeydir.
+                RefreshToken = CreateRefreshToken(), //string döndüğü için convert işlemi yapmıyoruz.
+                AccessTokenExpiration = accessTokenExpiration,
+                RefreshTokenExpiration = refreshTokenExpiration
+            }; //dto artık hazır
+            return tokenDto;
         }
 
         public ClientTokenDto CreateTokenByClient(Client client)
