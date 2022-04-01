@@ -33,9 +33,15 @@ namespace AuthServer.Service.Services
                                                                                                 //user var. bundan dolayı mapleme işlemi yapıyoruz.
         }
 
-        public Task<Response<UserAppDto>> GetUserByNameAsync(string userName)
+        public async Task<Response<UserAppDto>> GetUserByNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return Response<UserAppDto>.Fail("Username is not found", 404, true);
+            }
+            return Response<UserAppDto>.Success(ObjectMapper.Mapper.Map<UserAppDto>(user), 200);
+
         }
     }
 }
