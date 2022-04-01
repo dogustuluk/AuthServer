@@ -39,39 +39,43 @@ namespace AuthServer.Service.Services
         {
             //if'lerle tek tek kontrol etmeye "savunmacı yaklaşım" denmektedir. iç içe if-else blokları yazılmaz
             if (loginDto == null) throw new ArgumentNullException(nameof(loginDto)); //eğer loginDto boş ise hata fırlat
+            //nameoff >> kimin hakkında olduğunu belirtir. 
 
-            var user = await _userManager.FindByEmailAsync(loginDto.Email); //kullanıcının email ini buluyoruz
+            var user = await _userManager.FindByEmailAsync(loginDto.Email); //email adresinden user'ı buluyoruz.
             
             if (user == null) return Response<TokenDto>.Fail("Email or password is wrong", 400, true); //email veya şifre hatalı mesajının olmasının
             //sebebi ise kötü niyetli kullanıcının çıkarım yapmasının önüne geçmektir.
 
-            if(!await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            if(!await _userManager.CheckPasswordAsync(user, loginDto.Password)) //şifre kontrolünü yapıyoruz. password hashlendiği için burada password'ü vermek gerekiyor.
             {
                 return Response<TokenDto>.Fail("Email or password is wrong", 400, true);
             }
-            var token = _tokenService.CreateToken(user);
+            var token = _tokenService.CreateToken(user); //bu aşamada kullanıcı var olduğu bilindiği için kullanıcıya bir token veriyoruz.
+
+            //ardından refreshtoken kontrolü yapmamız lazım fakat öncesinde veri tabanında bir refresh token olup olmadığını kontrol etmeliyiz.
 
             var userRefreshToken = await _userRefreshTokenService.where(x => x.UserId == user.Id).SingleOrDefaultAsync();
 
             if (userRefreshToken == null)
             {
                 await _userRefreshTokenService.AddAsync(new UserRefreshToken { UserId = user.Id, Code = token.RefreshToken, 
-                    Expiration = token.RefreshTokenExpiration });
+                    Expiration = token.RefreshTokenExpiration }); //veri tabanına kayıt işlemi gerçekleşmesini sağlayan kod.
 
             }
-            else
+            else //güncelleme işlemi gerçekleştirilir.
             {
                 userRefreshToken.Code = token.RefreshToken;
                 userRefreshToken.Expiration = token.RefreshTokenExpiration;
             }
-
-            await _unitOfWork.CommitAsync();
-            return Response<TokenDto>.Success(token, 200);
+            //buraya kadar henüz veri tabanına işlem yansıtılmadı.
+            //entity framework işlemi memory'de tutuyor şuanda.
+            await _unitOfWork.CommitAsync(); //işlemin veri tabanına kayıt edilmesini sağlayan kod.
+            return Response<TokenDto>.Success(token, 200); //token'ın başarılı olarak kaydedildiğini "200" durum koduyla dönen kod.
 
             
         }
 
-        public Task<Response<ClientTokenDto>> CreateTokenByClient(ClientLoginDto clientLoginDto)
+        public Response<ClientTokenDto> CreateTokenByClient(ClientLoginDto clientLoginDto)
         {
             throw new NotImplementedException();
         }
