@@ -90,27 +90,28 @@ namespace AuthServer.Service.Services
 
         public async Task<Response<TokenDto>> CreateTokenByRefreshToken(string refreshToken)
         {
+            //önce veri tabanında refresh token olup olmadığını kontrol ediyoruz.
             var existRefreshToken = await _userRefreshTokenService.where(x => x.Code == refreshToken).SingleOrDefaultAsync();
-            
             if (existRefreshToken == null)
             {
                 return Response<TokenDto>.Fail("Refresh token is not found", 404, true);
             }
             
+            //refresh token var ise; user Id de vardır diyoruz.
             var user = await _userManager.FindByIdAsync(existRefreshToken.UserId);
-            
             if (user == null)
             {
                 return Response<TokenDto>.Fail("User Id is not found",404,true);
             }
             
-            var tokenDto = _tokenService.CreateToken(user);
+            var tokenDto = _tokenService.CreateToken(user); //yeni bir token oluşturduk. dolayısıyla yeni bir refresh token geldi
 
+            //gelen yeni refresh token'ı atayalım.
             existRefreshToken.Code = tokenDto.RefreshToken;
             existRefreshToken.Expiration = tokenDto.RefreshTokenExpiration;
 
+            //bunların güncellenmesini sağlayalım.
             await _unitOfWork.CommitAsync();
-
             return Response<TokenDto>.Success(tokenDto, 200);
         }
 
