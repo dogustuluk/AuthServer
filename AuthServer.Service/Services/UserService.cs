@@ -18,9 +18,17 @@ namespace AuthServer.Service.Services
         {
             _userManager = userManager;
         }
-        public Task<Response<UserAppDto>> CreateUserAsync(CreateUserDto createUserDto)
-        {
-            throw new NotImplementedException();
+        public async Task<Response<UserAppDto>> CreateUserAsync(CreateUserDto createUserDto)
+        {//yeni bir kullanıcı kaydı için:
+            var user = new UserApp {Email = createUserDto.Email, UserName = createUserDto.UserName };
+
+            var result = await _userManager.CreateAsync(user, createUserDto.Password); //hashleme işlemini burda yapmıyoruz, alt satırdaki koddan gelecek
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(x => x.Description).ToList();
+                return Response<UserAppDto>.Fail(new ErrorDto(errors,true),400);
+            }
+            return Response<UserAppDto>.Success(ObjectMapper.Mapper.Map<UserAppDto>(user), 200);
         }
 
         public Task<Response<UserAppDto>> GetUserByNameAsync(string userName)
