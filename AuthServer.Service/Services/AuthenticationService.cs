@@ -79,9 +79,9 @@ namespace AuthServer.Service.Services
         {
             var client = _clients.SingleOrDefault(x => x.ClientId == clientLoginDto.ClientId && x.Secret == clientLoginDto.ClientSecret);
 
-            if (client == null)
+            if (client == null) //üstteki kod client'ı bulamadıysa (yani öyle bir client yok ise) bu blokta fail veriyoruz
             {
-                return Response<ClientTokenDto>.Fail("Clientid or Secretid not found", 404, true);
+                return Response<ClientTokenDto>.Fail("Clientid or Secretid not found", 404, true); //404 hata kodu "not found" ifadesinde kullanılır.
             }
 
             var token = _tokenService.CreateTokenByClient(client);
