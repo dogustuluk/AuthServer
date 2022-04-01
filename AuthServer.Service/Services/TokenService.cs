@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace AuthServer.Service.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService : ITokenService //normalde bu servis dış dünyaya açılmaz, DI Container yardımıyla istenilen class'a initialize edilir.
     {
         private readonly UserApp _userApp;
         private readonly CustomTokenOption _tokenOption;
