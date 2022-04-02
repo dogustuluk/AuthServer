@@ -11,4 +11,11 @@ namespace AuthServer.Core.Entity
     {
         public string City { get; set; }
     }
+
+
+    //bu kod bloğu ile identity kütüphanesinde olmayıp kendi eklemek istediğiniz özellikleri yazabiliriz.
+    //public class UserRole: IdentityRole
+    //{
+    //    public int MyProperty { get; set; }
+    //}
 }
