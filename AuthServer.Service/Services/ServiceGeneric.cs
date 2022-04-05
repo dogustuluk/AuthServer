@@ -81,7 +81,7 @@ namespace AuthServer.Service.Services
 
         public async Task<Response<IEnumerable<TDto>>> where(Expression<Func<TEntity, bool>> predicate)
         {
-            var list = _genericRepository.where(predicate);
+            var list = _genericRepository.Where(predicate);
             return Response<IEnumerable<TDto>>.Success(ObjectMapper.Mapper.Map<IEnumerable<TDto>>(await list.ToListAsync()),200);
         }
     }

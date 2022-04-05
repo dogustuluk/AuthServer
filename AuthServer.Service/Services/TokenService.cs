@@ -2,6 +2,7 @@
 using AuthServer.Core.DTOs;
 using AuthServer.Core.Entity;
 using AuthServer.Core.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SharedLibrary.Configurations;
@@ -18,12 +19,12 @@ namespace AuthServer.Service.Services
 {
     public class TokenService : ITokenService //normalde bu servis dış dünyaya açılmaz, DI Container yardımıyla istenilen class'a initialize edilir.
     {
-        private readonly UserApp _userApp;
+        private readonly UserManager<UserApp> _userManager;
         private readonly CustomTokenOption _tokenOption;
 
-        public TokenService(UserApp userApp, IOptions<CustomTokenOption>options)
+        public TokenService(UserManager<UserApp> userManager, IOptions<CustomTokenOption> options)
         {
-            _userApp = userApp;
+            _userManager = userManager;
             _tokenOption = options.Value;
         }
 

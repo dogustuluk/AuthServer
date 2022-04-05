@@ -60,7 +60,7 @@ namespace AuthServer.Data.Repositories
             return entity;
         }
 
-        public IQueryable<TEntity> where(Expression<Func<TEntity, bool>> predicate)
+        public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
         {
             return _dbSet.Where(predicate);
         }

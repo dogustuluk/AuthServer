@@ -54,7 +54,7 @@ namespace AuthServer.Service.Services
 
             //ardından refreshtoken kontrolü yapmamız lazım fakat öncesinde veri tabanında bir refresh token olup olmadığını kontrol etmeliyiz.
 
-            var userRefreshToken = await _userRefreshTokenService.where(x => x.UserId == user.Id).SingleOrDefaultAsync();
+            var userRefreshToken = await _userRefreshTokenService.Where(x => x.UserId == user.Id).SingleOrDefaultAsync();
 
             if (userRefreshToken == null)
             {
@@ -91,7 +91,7 @@ namespace AuthServer.Service.Services
         public async Task<Response<TokenDto>> CreateTokenByRefreshToken(string refreshToken)
         {
             //önce veri tabanında refresh token olup olmadığını kontrol ediyoruz.
-            var existRefreshToken = await _userRefreshTokenService.where(x => x.Code == refreshToken).SingleOrDefaultAsync();
+            var existRefreshToken = await _userRefreshTokenService.Where(x => x.Code == refreshToken).SingleOrDefaultAsync();
             if (existRefreshToken == null)
             {
                 return Response<TokenDto>.Fail("Refresh token is not found", 404, true);
@@ -117,7 +117,7 @@ namespace AuthServer.Service.Services
 
         public async Task<Response<NoDataDto>> RevokeRefreshToken(string refreshToken)
         {
-            var existRefreshToken = await _userRefreshTokenService.where(x => x.Code == refreshToken).SingleOrDefaultAsync();
+            var existRefreshToken = await _userRefreshTokenService.Where(x => x.Code == refreshToken).SingleOrDefaultAsync();
             if (existRefreshToken == null)
             {
                 return Response<NoDataDto>.Fail("Refresh token is not found", 404, true);
