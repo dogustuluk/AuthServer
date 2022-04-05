@@ -15,7 +15,6 @@ namespace AuthServer.Data
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options) //options işleminin "AppDbContext" üzerinde yapılacağını belirtiyoruz,
             //ismini ise "options" olarak veriyoruz. ":base(options)" ile base constructor'a yolluyoruz (identitydbcontext'in miras alındığı constructor'a)
         {
-
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<UserRefreshToken>  UserRefreshTokens { get; set; }

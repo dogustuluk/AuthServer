@@ -51,7 +51,7 @@ namespace _AuthServer.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("SqlServer"),sqlOptions =>
                 {
-                    sqlOptions.MigrationsAssembly("AuthServer.Data"); //Projenin ismi ne ise Assembly'nin ismi de o olmalýdýr.
+                    sqlOptions.MigrationsAssembly("authserver.data"); //Projenin ismi ne ise Assembly'nin ismi de o olmalýdýr.
                 }); //veri tabaný yolunu bildirmiþ oluyoruz.
             });
 
