@@ -6,6 +6,7 @@ using AuthServer.Core.UnitOfWork;
 using AuthServer.Data;
 using AuthServer.Data.Repositories;
 using AuthServer.Service.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -68,6 +69,34 @@ namespace _AuthServer.API
 
             services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));
             services.Configure<List<Client>>(Configuration.GetSection("Clients"));
+
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; //bu kod satýrý; üstteki kod satýrý ile alttaki kod satýrýnýn birbiriyle iletiþim
+                //halinde olmasý saðlamaktadýr.
+                //3'ünün de ismi ayný olmalýdýr ki birbirleriyle iletiþim halinde olabilsinler.
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            {
+                var tokenOptions = Configuration.GetSection("TokenOption").Get<CustomTokenOption>();
+                opts.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidIssuer = tokenOptions.Issuer,
+                    ValidAudience = tokenOptions.Audience[0], //audience'larýn ilk indisini vermemizin sebebi bizim ana projemiz olmasýdýr. ana projeyi vererek diðer
+                    //audience'lara da eriþim saðlatabiliriz.
+                    IssuerSigningKey = SignService.GetSymmetricSecurityKey(tokenOptions.SecurityKey),
+
+                    //kontrol ediliyor
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero //default olarak verilen 5dk'yý sýfýrlar. farklý serverlarda çalýþmaktan dolayý oluþan zamanlama hatalarýný tolere edebilmek
+                    //için default deðer 5dk'dýr. test amaçlý olmasý nedeniyle bunu 0'a çekeriz.
+                    //.
+                };
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
