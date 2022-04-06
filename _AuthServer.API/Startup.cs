@@ -118,7 +118,7 @@ namespace _AuthServer.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication(); //buradaki sýralama önemlidir.
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
