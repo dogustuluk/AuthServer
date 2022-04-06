@@ -14,7 +14,7 @@ namespace _AuthServer.API.Controllers
             return new ObjectResult(response)
             {
                 StatusCode = response.StatusCode
-        };
+            };
         }
     }
 }
