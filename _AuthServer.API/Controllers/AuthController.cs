@@ -45,8 +45,16 @@ namespace _AuthServer.API.Controllers
             var result = _authenticationService.CreateTokenByClient(clientLoginDto);
             return ActionResultInstance(result);
         }
+        
         [HttpPost] //get olarak da alabiliriz ama url'de taşınmasını istemiyoruz, request body'sinde taşınmasını istiyoruz.
         public async Task<IActionResult> RevokeRefreshToken(RefreshTokenDto refreshTokenDto)
+        {
+            var result = await _authenticationService.CreateTokenByRefreshToken(refreshTokenDto.Token);
+            return ActionResultInstance(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTokenByRefreshToken(RefreshTokenDto refreshTokenDto)
         {
             var result = await _authenticationService.CreateTokenByRefreshToken(refreshTokenDto.Token);
             return ActionResultInstance(result);
