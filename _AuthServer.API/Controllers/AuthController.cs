@@ -39,6 +39,7 @@ namespace _AuthServer.API.Controllers
             return ActionResultInstance(result);
         }
 
+        [HttpPost]
         public IActionResult CreateTokenByClient (ClientLoginDto clientLoginDto)
         {
             var result = _authenticationService.CreateTokenByClient(clientLoginDto);
