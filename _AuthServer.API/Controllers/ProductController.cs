@@ -40,7 +40,11 @@ namespace _AuthServer.API.Controllers
         {
             return ActionResultInstance(await _productService.Update(productDto, productDto.Id));
         }
-        [HttpDelete]
+
+
+        //id'yi query string'ten almak istemediğimiz zaman
+        //api/product/2 şeklinde alacaktır id'yi ama delete'te süslü parantez içerisinde yazmaz isek api/product?id=2 şeklinde olacaktır.
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             return ActionResultInstance(await _productService.Remove(id));
