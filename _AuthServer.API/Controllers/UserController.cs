@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace _AuthServer.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] //method tipinden kendisi otomatik olarak eşleşecektir.
     [ApiController]
     public class UserController : CustomBaseController
     {
