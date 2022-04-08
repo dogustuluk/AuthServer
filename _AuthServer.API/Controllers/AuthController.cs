@@ -49,7 +49,7 @@ namespace _AuthServer.API.Controllers
         [HttpPost] //get olarak da alabiliriz ama url'de taşınmasını istemiyoruz, request body'sinde taşınmasını istiyoruz.
         public async Task<IActionResult> RevokeRefreshToken(RefreshTokenDto refreshTokenDto)
         {
-            var result = await _authenticationService.CreateTokenByRefreshToken(refreshTokenDto.Token);
+            var result = await _authenticationService.RevokeRefreshToken(refreshTokenDto.Token);
             return ActionResultInstance(result);
         }
 
