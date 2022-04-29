@@ -19,8 +19,8 @@ namespace MiniApp2.API.Controllers
         {
             var userName = HttpContext.User.Identity.Name;
             var userMail = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email);
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            return Ok($"Invoice Transactions => userId: {userId} - userName: {userName} - userMail: {userMail}");
+            var userIdClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            return Ok($"Invoice Transactions => userId: {userIdClaim.Value} - userName: {userName} - userMail: {userMail}");
         }
     }
 }

@@ -19,11 +19,11 @@ namespace MiniApp1.API.Controllers
         {
             var userName = HttpContext.User.Identity.Name; //endpoint'e istek yapıldığında token'ın payload'ından name verisini çeker.
             //yukarıdaki name ile veri tabanından istenilen kullanıcıya ait verileri çekebiliriz.
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            var userIdClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
             //veri tabanından userName veya userId alanları üzerinden gerekli dataları çekebiliriz.
             var userMail = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email); //token'dan mail adresini almak için.
             //bu verileri çekerken ezbere gitmemek için TokenService'teki ilgili metot içerisinden (genellikle GetClaims olmakta) alınır.
-            return Ok($"Stock Transactions => UserName: {userName} - UserId: {userId} - UserMail: {userMail}");
+            return Ok($"Stock Transactions => UserName: {userName} - UserId: {userIdClaim.Value} - UserMail: {userMail}");
 
         }
 
