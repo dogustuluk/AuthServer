@@ -15,6 +15,7 @@ namespace MiniApp1.API.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
+        [HttpGet]
         public IActionResult GetStock()
         {
             var userName = HttpContext.User.Identity.Name; //endpoint'e istek yapıldığında token'ın payload'ından name verisini çeker.
