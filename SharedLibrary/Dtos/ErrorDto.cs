@@ -11,6 +11,8 @@ namespace SharedLibrary.Dtos
         public List<String> Errors { get; private set; } = new List<string>(); //birden fazla hata olması nedeniyle liste içerisinde tutuluyor.
         public bool IsShow { get; private set; }
 
+     
+
         public ErrorDto(string error, bool isShow)
         {
             Errors.Add(error);
