@@ -21,7 +21,7 @@ namespace MiniApp1.API.Controllers
             //veri tabanından userName veya userId alanları üzerinden gerekli dataları çekebiliriz.
             var userMail = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email); //token'dan mail adresini almak için.
             //bu verileri çekerken ezbere gitmemek için TokenService'teki ilgili metot içerisinden (genellikle GetClaims olmakta) alınır.
-            return Ok($"UserName: {userName} - UserId: {userId} - UserMail: {userMail}");
+            return Ok($"Stock Transactions => UserName: {userName} - UserId: {userId} - UserMail: {userMail}");
 
         }
 
